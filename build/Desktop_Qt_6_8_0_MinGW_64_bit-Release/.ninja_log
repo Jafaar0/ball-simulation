@@ -1,0 +1,25 @@
+# ninja log v6
+10	1318	7573650881247347	Qt_test_autogen/timestamp	c1421643a931451b
+10	1318	7573650881247347	Qt_test_autogen/mocs_compilation.cpp	c1421643a931451b
+10	1318	7573650881247347	C:/Users/hhaym/Documents/Qt_test/build/Desktop_Qt_6_8_0_MinGW_64_bit-Release/Qt_test_autogen/timestamp	c1421643a931451b
+10	1318	7573650881247347	C:/Users/hhaym/Documents/Qt_test/build/Desktop_Qt_6_8_0_MinGW_64_bit-Release/Qt_test_autogen/mocs_compilation.cpp	c1421643a931451b
+1330	5939	7573650882537329	CMakeFiles/Qt_test.dir/main.cpp.obj	1caf8ccb732fb2d7
+1334	5941	7573650882577340	CMakeFiles/Qt_test.dir/mainwindow.cpp.obj	1fc2cc0e8635cfe1
+1326	6307	7573650882497361	CMakeFiles/Qt_test.dir/Qt_test_autogen/mocs_compilation.cpp.obj	6b6e46001b0a4302
+1338	6437	7573650882617334	CMakeFiles/Qt_test.dir/drawarea.cpp.obj	20a4ba3fdecd1098
+1343	6494	7573650882667334	CMakeFiles/Qt_test.dir/context.cpp.obj	1592d58a48105828
+6494	6725	7573650934180098	Qt_test.exe	f6618ec8b8419966
+55	279	7573651453637405	Qt_test_autogen/timestamp	c1421643a931451b
+55	279	7573651453637405	Qt_test_autogen/mocs_compilation.cpp	c1421643a931451b
+55	279	7573651453637405	C:/Users/hhaym/Documents/Qt_test/build/Desktop_Qt_6_8_0_MinGW_64_bit-Release/Qt_test_autogen/timestamp	c1421643a931451b
+55	279	7573651453637405	C:/Users/hhaym/Documents/Qt_test/build/Desktop_Qt_6_8_0_MinGW_64_bit-Release/Qt_test_autogen/mocs_compilation.cpp	c1421643a931451b
+281	3893	7573651455887386	CMakeFiles/Qt_test.dir/mainwindow.cpp.obj	1fc2cc0e8635cfe1
+285	4106	7573651455937371	CMakeFiles/Qt_test.dir/context.cpp.obj	1592d58a48105828
+4106	4333	7573651494147404	Qt_test.exe	f6618ec8b8419966
+45	233	7573652183380375	Qt_test_autogen/timestamp	c1421643a931451b
+45	233	7573652183380375	Qt_test_autogen/mocs_compilation.cpp	c1421643a931451b
+45	233	7573652183380375	C:/Users/hhaym/Documents/Qt_test/build/Desktop_Qt_6_8_0_MinGW_64_bit-Release/Qt_test_autogen/timestamp	c1421643a931451b
+45	233	7573652183380375	C:/Users/hhaym/Documents/Qt_test/build/Desktop_Qt_6_8_0_MinGW_64_bit-Release/Qt_test_autogen/mocs_compilation.cpp	c1421643a931451b
+235	3674	7573652185281672	CMakeFiles/Qt_test.dir/mainwindow.cpp.obj	1fc2cc0e8635cfe1
+238	3929	7573652185321693	CMakeFiles/Qt_test.dir/context.cpp.obj	1592d58a48105828
+3929	4161	7573652222221727	Qt_test.exe	f6618ec8b8419966
