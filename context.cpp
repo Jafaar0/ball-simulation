@@ -16,11 +16,9 @@ void Context::updatePhysicalSystem(float dt){
     addStaticContactConstraints(dt);
     addDynamicContactConstraints(dt);
     projectConstraints();
-/*
-    while(!(staticConstraints.empty() && dynamicConstraints.empty())){
-        addStaticContactConstraints(dt);
-        addDynamicContactConstraints(dt);
-    }*/
+
+    applyLinkConstraints(dt);
+
     updateVelocityAndPosition(dt);
 };
 
@@ -40,27 +38,27 @@ void Context::addSphereCollider(Vec2 centre, float rayon) {
 void Context::applyExternalForce(float dt){
     //gravity
     float g = 9.81;
-    for(Particule &particule:particules){
-        particule.velocity[1] -= g;
+    for(auto &particule:particules){
+        particule->velocity[1] -= g;
     }
 /**/
     //air resistance
     float f = 2;
-    for(Particule &particule:particules){
-        particule.velocity = particule.velocity - particule.velocity*(f*dt);
+    for(auto &particule:particules){
+        particule->velocity = particule->velocity - particule->velocity*(f*dt);
     }
 };
 
 void Context::updateExpectedPosition(float dt){
-    for(Particule &particule:particules){
-        particule.pos_ = particule.pos+(particule.velocity*dt);
+    for(auto &particule:particules){
+        particule->pos_ = particule->pos+(particule->velocity*dt);
     }
 };
 
 void Context::updateVelocityAndPosition(float dt){
-    for(Particule &particule:particules){
-        particule.velocity = (particule.pos_ - particule.pos)*(1/dt);
-        particule.pos = particule.pos_;
+    for(auto &particule:particules){
+        particule->velocity = (particule->pos_ - particule->pos)*(1/dt);
+        particule->pos = particule->pos_;
     }
 };
 
@@ -124,8 +122,8 @@ void Context::addStaticContactConstraints(float dt){
     staticConstraints.clear();
     for( auto& particule:particules){
         for(auto &colliderptr:CollidersPtr){
-            if (colliderptr->checkContact(particule)) {
-                staticConstraints.push_back(StaticConstraint(particule,colliderptr));
+            if (colliderptr->checkContact(*particule)) {
+                staticConstraints.push_back(StaticConstraint(*particule,colliderptr));
             }
         }
     }
@@ -170,8 +168,8 @@ void Context::addDynamicContactConstraints(float dt) {
     dynamicConstraints.clear();
     for (int i = 0; i < particules.size(); ++i) {
         for (int j = i + 1; j < particules.size(); ++j) {
-            if(particules[i].checkContact(particules[j])) {
-                dynamicConstraints.push_back(DynamicConstraint(particules[i],particules[j]));
+            if(particules[i]->checkContact(*particules[j])) {
+                dynamicConstraints.push_back(DynamicConstraint(*particules[i],*particules[j]));
             }
         }
     }
@@ -187,49 +185,51 @@ void Context::projectConstraints(){
     }
 }
 
-/*
-void DrawArea::animate(){
-    for(auto& center:context.particules){
-        gravity(center);
-        airResistance(center);
+void Context::create_solid(Vec2 pos, Vec2 v, float r, float m){
+    float x = pos[0];
+    float y = pos[1];
 
-        center.at(0) += center.at(2);
-        center.at(1) += center.at(3);
+    Particule p1(Vec2{(float)(x-1.1*r),(float)(y-1.1*r)},v,r,m);
+    Particule p2(Vec2{(float)(x-1.1*r),(float)(y+1.1*r)},v,r,m);
+    Particule p3(Vec2{(float)(x+1.1*r),(float)(y-1.1*r)},v,r,m);
+    Particule p4(Vec2{(float)(x+1.1*r),(float)(y+1.1*r)},v,r,m);
 
-        //if(center.at(1)+r>=this->height()) center.at(1)=this->height()-r;
-    }
+    float L = 1.1*2*r;
+    float stiffness = 0.1;
 
-    for(auto& center:vec){
-        interaction(center);
-    }
-    update();
+    particules.push_back(std::make_shared<Particule>(p4));
+    particules.push_back(std::make_shared<Particule>(p3));
+    particules.push_back(std::make_shared<Particule>(p2));
+    particules.push_back(std::make_shared<Particule>(p1));
+
+    linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-1],*particules[particules.size()-2],L,stiffness});
+    linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-1],*particules[particules.size()-3],L,stiffness});
+    linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-4],*particules[particules.size()-2],L,stiffness});
+    linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-4],*particules[particules.size()-3],L,stiffness});
+    linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-4],*particules[particules.size()-1],static_cast<float>(L*sqrt(2)),stiffness});
+    linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-2],*particules[particules.size()-3],static_cast<float>(L*sqrt(2)),stiffness});
 }
 
-void interaction(std::vector<float> &self){
-    for(auto& other:vec){
-        if(other!=self) {
-            float dist2 = (self.at(0)-other.at(0))*(self.at(0)-other.at(0)) + (self.at(1)-other.at(1))*(self.at(1)-other.at(1));
+void Context::applyLinkConstraints(float dt){
+    for(auto& link:linkConstraints){
+        Particule& pi = link.particule1;
+        Particule& pj = link.particule2;
+        float L = link.L;
+        float gam = link.stiffness;
 
-            //std::cout<<self.at(1)<<other.at(1)<<std::endl;
-            //std::cout<<dist2<<std::endl;
-            if (dist2<(4*r*r)) {
-                float midpofloatx = std::round((double)(self.at(0)+other.at(0))/2);
-                float midpofloaty = std::round((double)(self.at(1)+other.at(1))/2);
+        Vec2 xji = pi.pos_-pj.pos_;
+        float C = sqrt(xji*xji) - L;
 
-                std::pair<double,double> dir((double)(self.at(0)-other.at(0))/sqrt(dist2),(double)(self.at(1)-other.at(1))/sqrt(dist2));
-                //std::cout<<dir.at(0)<<","<<dir.at(1)<<std::endl;
+        Vec2 deltai = xji*(-1/sqrt(xji*xji))*gam*C*((1/pi.mass)/((1/pi.mass)+(1/pj.mass)));
+        Vec2 deltaj = deltai*(-pi.mass/pj.mass);
 
-                self.at(0) = std::round(midpofloatx + std::round(r * dir.first));
-                self.at(1) = std::round(midpofloaty + std::round(r * dir.second));
-                other.at(0) = std::round(midpofloatx - std::round(r * dir.first));
-                other.at(1) = std::round(midpofloaty - std::round(r * dir.second));
-
-                //std::cout<<self.at(0)<<","<<self.at(1)<<std::endl;
-                //std::cout<<other.at(0)<<","<<other.at(1)<<std::endl;
-
-
-            }
-        }
+        pi.pos_= pi.pos_+deltai;
+        pj.pos_ = pj.pos_+deltaj;
     }
 }
-*/
+
+void LinkConstraint::draw(QPainter* painter, float height){
+
+    painter->setPen(QPen(Qt::blue, 1, Qt::SolidLine, Qt::RoundCap));
+    painter->drawLine(particule1.pos[0], height-particule1.pos[1], particule2.pos[0], height-particule2.pos[1]);
+}

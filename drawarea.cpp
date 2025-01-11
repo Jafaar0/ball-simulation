@@ -28,18 +28,22 @@ void DrawArea::animate(){
 
 void DrawArea::affichage(QPainter *painter, QPaintEvent *event, Context &context, DrawArea& drawArea){
     for(auto &particule:context.particules) {
-        Vec2 coord = drawArea.worldToView(particule.pos);
+        Vec2 coord = drawArea.worldToView(particule->pos);
 
         float x = coord[0];
         float y = coord[1];
 
-        QRectF target(x-particule.radius, y-particule.radius, particule.radius*2, particule.radius*2);
+        QRectF target(x-particule->radius, y-particule->radius, particule->radius*2, particule->radius*2);
         painter->setBrush(QBrush(Qt::red));
         painter->drawEllipse(target);
     }
 
     for (auto &colliderPtr:context.CollidersPtr){
         colliderPtr->draw(painter,drawArea.height());
+    }
+
+    for (auto& link:context.linkConstraints){
+        link.draw(painter,drawArea.height());
     }
 };
 
@@ -60,7 +64,9 @@ void DrawArea::mouseDoubleClickEvent(QMouseEvent *e){
     x_ = e->x();
     y_ = e->y();
 
-    context.particules.push_back(Particule{this->worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m});
+    //context.particules.push_back(Particule{this->worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m});
+
+    context.create_solid(worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m);
 }
 
 

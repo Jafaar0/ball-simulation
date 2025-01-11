@@ -103,6 +103,20 @@ struct DynamicConstraint
     DynamicConstraint(Particule& p, Particule& p2): particule1(p), particule2(p2){};
 };
 
+struct LinkConstraint
+{
+    Particule& particule1;
+    Particule& particule2;
+
+    float L;
+    float stiffness;
+
+    LinkConstraint(Particule& p1, Particule& p2, float L_, float stiffness_)
+        : particule1(p1), particule2(p2), L(L_), stiffness(stiffness_) {}
+
+    void draw(QPainter* painter, float height);
+};
+
 class Context
 {
     void applyExternalForce(float dt);
@@ -113,15 +127,19 @@ class Context
     void projectConstraints();
     void applyFriction(float dt);
     void deleteContactConstraints();
+    void applyLinkConstraints(float dt);
 
     void addPlanCollider(Vec2 a, Vec2 b, bool c);
     void addSphereCollider(Vec2 centre, float rayon);
 public:
     Context();
-    std::vector<Particule> particules;
+    std::vector<std::shared_ptr<Particule>> particules;
     std::vector<StaticConstraint> staticConstraints;
     std::vector<DynamicConstraint> dynamicConstraints;
     std::vector<std::shared_ptr<Collider>> CollidersPtr;
+    std::vector<LinkConstraint> linkConstraints;
+
+    void create_solid(Vec2 pos, Vec2 v, float r, float m);
 
     void updatePhysicalSystem(float dt);
 };
