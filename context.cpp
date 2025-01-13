@@ -67,7 +67,7 @@ bool PlanCollider::checkContact(const Particule& collider)  {
     Vec2 vecDirecteur = Vec2{-this->normale()[1],this->normale()[0]};
 
 
-    return (collider.pos_-this->origine())*this->normale()-collider.radius<0 &&
+    return abs((collider.pos_-this->origine())*this->normale())<collider.radius &&
            collider.velocity*normale()<0 &&
            abs((collider.pos_-origine())*vecDirecteur)<(largeur/2);
 };
@@ -129,17 +129,32 @@ void Context::addStaticContactConstraints(float dt){
     }
 }
 
-void enforceStaticGrouneConstraint(StaticConstraint& constraint) {
+void enforceStaticGroundConstraint(StaticConstraint& constraint) {
 
     Particule& particule = constraint.particule;
     const Vec2& nc = constraint.collider->normale(particule);
     const Vec2& pc = constraint.collider->pc(particule);
-
+    //Réaction normale du support
     Vec2 qc = particule.pos_ - (nc*((particule.pos_ - pc)*nc));
     float C = (particule.pos_ - qc)*nc-particule.radius;
     Vec2 delta = nc*(-C);
 
     particule.pos_ = particule.pos_ + delta;
+
+    //Réaction tangentielle du support
+    Vec2 currentv = particule.pos_ - particule.pos;
+    Vec2 vt = currentv - (nc*(currentv*nc));
+    float vt_norm = sqrt(vt*vt);
+    Vec2 delta_t = Vec2{0,0};
+    if(vt_norm>0){//si la composante tangentielle n'est pas nul, on applique un frottement solide
+        float coef = 0.1f;
+        delta_t = vt*(-coef*vt_norm);
+    }
+    if(vt_norm<0.05){//si la vitesse est assez faible, on l'annule complètement
+        delta_t = vt*(-1);
+    }
+    particule.pos_ = currentv + delta_t + particule.pos;
+    
 }
 
 
@@ -178,7 +193,7 @@ void Context::addDynamicContactConstraints(float dt) {
 
 void Context::projectConstraints(){
     for(auto& staticConstraint:staticConstraints){
-        enforceStaticGrouneConstraint(staticConstraint);
+        enforceStaticGroundConstraint(staticConstraint);
     }
     for(auto& dynamicConstraint:dynamicConstraints){
         solveDynamicConstraint(dynamicConstraint);
