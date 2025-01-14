@@ -9,6 +9,11 @@ Context::Context() {
     addSphereCollider(Vec2{100,200},50);
 }
 
+/**
+ * @brief Context::updatePhysicalSystem update the physical system of the simulation
+ * @param dt: time step
+ * @details It applies the external forces, updates the expected position of the particules, adds the static and dynamic contact constraints,
+ */
 void Context::updatePhysicalSystem(float dt){
     applyExternalForce(dt);
     updateExpectedPosition(dt);
@@ -22,6 +27,12 @@ void Context::updatePhysicalSystem(float dt){
     updateVelocityAndPosition(dt);
 };
 
+/**
+ * @brief Context::addPlanCollider add a plan collider to the simulation
+ * @param a: first point of the plan
+ * @param b: second point of the plan
+ * @param c: true for a normal pointing in one direction, false for the other direction
+ */
 void Context::addPlanCollider(Vec2 a, Vec2 b, bool c) {
     Vec2 origine = (a+b)*(0.5);
     float largeur = sqrt((b-a)*(b-a));
@@ -31,10 +42,20 @@ void Context::addPlanCollider(Vec2 a, Vec2 b, bool c) {
     CollidersPtr.push_back(std::make_shared<PlanCollider>(normale,origine,largeur));
 }
 
+/**
+ * @brief Context::addSphereCollider add a sphere collider to the simulation
+ * @param centre: position of the sphere
+ * @param rayon: radius of the sphere
+ */
 void Context::addSphereCollider(Vec2 centre, float rayon) {
     CollidersPtr.push_back(std::make_shared<SphereCollider>(centre, rayon));
 }
 
+/**
+ * @brief Context::applyExternalForce apply the external forces to the particules
+ * @param dt: time step
+ * @details It applies the gravity and the air resistance to the particules
+ */
 void Context::applyExternalForce(float dt){
     //gravity
     float g = 9.81;
@@ -49,12 +70,18 @@ void Context::applyExternalForce(float dt){
     }
 };
 
+/**
+ * @brief Context::updateExpectedPosition update the expected position of the particules
+ */
 void Context::updateExpectedPosition(float dt){
     for(auto &particule:particules){
         particule->pos_ = particule->pos+(particule->velocity*dt);
     }
 };
 
+/**
+ * @brief Context::updateVelocityAndPosition update the velocity and the position of the particules
+ */
 void Context::updateVelocityAndPosition(float dt){
     for(auto &particule:particules){
         particule->velocity = (particule->pos_ - particule->pos)*(1/dt);
@@ -62,14 +89,15 @@ void Context::updateVelocityAndPosition(float dt){
     }
 };
 
-bool PlanCollider::checkContact(const Particule& collider)  {
+
+bool PlanCollider::checkContact(const Particule& particule)  {
 
     Vec2 vecDirecteur = Vec2{-this->normale()[1],this->normale()[0]};
 
 
-    return abs((collider.pos_-this->origine())*this->normale())<collider.radius &&
-           collider.velocity*normale()<0 &&
-           abs((collider.pos_-origine())*vecDirecteur)<(largeur/2);
+    return abs((particule.pos_-this->origine())*this->normale())<particule.radius &&
+           particule.velocity*normale()<0 &&
+           abs((particule.pos_-origine())*vecDirecteur)<(largeur/2);
 };
 
 void PlanCollider::draw(QPainter* painter,float height) const {
@@ -98,8 +126,8 @@ Vec2 SphereCollider::normale(const Particule& particule) const {
     return (particule.pos_-p)*(1/sqrt((particule.pos_-p)*(particule.pos_-p)));
 }
 
-bool SphereCollider::checkContact(const Particule& collider)  {
-    return sqrt((collider.pos_ - p)*(collider.pos_ - p)) - collider.radius-r<0;
+bool SphereCollider::checkContact(const Particule& particule)  {
+    return sqrt((particule.pos_ - p)*(particule.pos_ - p)) - particule.radius-r<0;
 };
 
 void SphereCollider::draw(QPainter* painter,float height) const {
@@ -118,6 +146,10 @@ Vec2 SphereCollider::pc(const Particule& particule) {//closest point on the coll
     return p+normale(particule)*r;
 }
 
+/**
+ * @brief Context::addStaticContactConstraints check for contacts and add the static contact constraints to the simulation
+ * @param dt: time step
+ */
 void Context::addStaticContactConstraints(float dt){
     staticConstraints.clear();
     for( auto& particule:particules){
@@ -129,6 +161,12 @@ void Context::addStaticContactConstraints(float dt){
     }
 }
 
+/**
+ * @brief Context::enforceStaticGroundConstraint resolve the static contact constraints
+ * @param constraint: static contact constraint
+ * @details It applies the reaction force to the particule to enforce the static ground constraint
+ *         It also applies a solid friction to the particule
+ */
 void enforceStaticGroundConstraint(StaticConstraint& constraint) {
 
     Particule& particule = constraint.particule;
@@ -164,6 +202,11 @@ bool Particule::checkContact(const Particule& collider)  {
     return sqrt((collider.pos_ - this->pos_)*(collider.pos_ - this->pos_)) - collider.radius-this->radius<0;
 };
 
+/**
+ * @brief Context::solveDynamicConstraint resolve the dynamic contact constraints
+ * @param constraint: dynamic contact constraint
+ * @details It applies the reaction force to the particules to enforce the dynamic contact constraint
+ */
 void solveDynamicConstraint(DynamicConstraint& constraint){
     Particule& p1 = constraint.particule1;
     Particule& p2 = constraint.particule2;
@@ -179,6 +222,10 @@ void solveDynamicConstraint(DynamicConstraint& constraint){
     p2.pos_ = p2.pos_ + delta_j;
 }
 
+/**
+ * @brief Context::addDynamicContactConstraints check for contacts between particules and add the dynamic contact constraints to the simulation
+ * @param dt: time step
+ */
 void Context::addDynamicContactConstraints(float dt) {
     dynamicConstraints.clear();
     for (int i = 0; i < particules.size(); ++i) {
@@ -190,7 +237,9 @@ void Context::addDynamicContactConstraints(float dt) {
     }
 };
 
-
+/**
+ * @brief Context::projectConstraints solve all constraints
+ */
 void Context::projectConstraints(){
     for(auto& staticConstraint:staticConstraints){
         enforceStaticGroundConstraint(staticConstraint);
@@ -200,6 +249,9 @@ void Context::projectConstraints(){
     }
 }
 
+/**
+ * @brief Context::create_solid create a solid with 4 particules and 6 link constraints between them
+ */
 void Context::create_solid(Vec2 pos, Vec2 v, float r, float m){
     float x = pos[0];
     float y = pos[1];
@@ -225,6 +277,10 @@ void Context::create_solid(Vec2 pos, Vec2 v, float r, float m){
     linkConstraints.emplace_back(LinkConstraint{*particules[particules.size()-2],*particules[particules.size()-3],static_cast<float>(L*sqrt(2)),stiffness});
 }
 
+/**
+ * @brief Context::applyLinkConstraints apply the link constraints to the particules
+ * @param dt: time step
+ */
 void Context::applyLinkConstraints(float dt){
     for(auto& link:linkConstraints){
         Particule& pi = link.particule1;
@@ -242,6 +298,7 @@ void Context::applyLinkConstraints(float dt){
         pj.pos_ = pj.pos_+deltaj;
     }
 }
+
 
 void LinkConstraint::draw(QPainter* painter, float height){
 

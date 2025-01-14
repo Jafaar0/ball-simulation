@@ -8,10 +8,13 @@
 #include "context.h"
 
 
-
+/**
+ * @brief The DrawArea class is the class that contains the display of the application
+ * @details It contains the physical system and the display of the particules, colliders and link constraints
+ */
 class DrawArea : public QOpenGLWidget
 {
-    Q_OBJECT
+
 public:
     explicit DrawArea(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *e) override;

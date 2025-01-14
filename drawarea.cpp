@@ -15,17 +15,27 @@ DrawArea::DrawArea(QWidget *parent)
 
 }
 
-
+/**
+ * @brief DrawArea::worldToView convert a world coordinate to a view coordinate
+ */
 Vec2 DrawArea::worldToView(Vec2 worldCoord){return Vec2{worldCoord[0],this->height()-worldCoord[1]};}
+/**
+ * @brief DrawArea::viewToWorld convert a view coordinate to a world coordinate
+ */
 Vec2 DrawArea::viewToWorld(Vec2 viewCoord){return Vec2{viewCoord[0],this->height()-viewCoord[1]};}
 
 
-
+/**
+ * @brief DrawArea::animate update the physical system and update the display
+ */
 void DrawArea::animate(){
     context.updatePhysicalSystem(dt);
     update();
 }
 
+/**
+ * @brief DrawArea::affichage draw the particules, colliders and link constraints on the application
+ */
 void DrawArea::affichage(QPainter *painter, QPaintEvent *event, Context &context, DrawArea& drawArea){
     for(auto &particule:context.particules) {
         Vec2 coord = drawArea.worldToView(particule->pos);
@@ -47,6 +57,9 @@ void DrawArea::affichage(QPainter *painter, QPaintEvent *event, Context &context
     }
 };
 
+/**
+ * @brief DrawArea::paintEvent define the QPainter of the DrawArea and call the affichage method
+ */
 void DrawArea::paintEvent(QPaintEvent *e){
     // dans la méthode pafloatEvent de votre nouveau Widget ajoutez :
     QPainter p(this);
@@ -59,7 +72,9 @@ void DrawArea::paintEvent(QPaintEvent *e){
 
 
 
-
+/**
+ * @brief DrawArea::mousePressEvent add a solid to the simulation when the user double-click on the DrawArea
+ */
 void DrawArea::mouseDoubleClickEvent(QMouseEvent *e){
     x_ = e->x();
     y_ = e->y();
