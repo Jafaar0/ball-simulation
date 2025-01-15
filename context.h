@@ -106,6 +106,7 @@ struct PlanCollider : Collider
     Vec2 n;
     Vec2 p;
     Vec2 origine() const override {return p;}
+    QColor color = Qt::black;
     float largeur;
     Vec2 normale(const Particule& particule) const override {return n;}
     Vec2 normale() {return n;}
@@ -129,13 +130,14 @@ struct PlanCollider : Collider
      */
     Vec2 pc(const Particule& particule) override {return p;};
 
-    PlanCollider(Vec2 normale_,Vec2 origine_, float largeur_): n(normale_), p(origine_), largeur(largeur_) {};
+    PlanCollider(Vec2 normale_,Vec2 origine_, float largeur_, QColor color_): n(normale_), p(origine_), largeur(largeur_), color(color_) {};
 };
 
 struct SphereCollider : Collider
 {
     Vec2 p;
     Vec2 origine() const override {return p;}
+    QColor color = Qt::black;
     float r;
     Vec2 normale(const Particule& particule) const override;
     /**
@@ -157,7 +159,7 @@ struct SphereCollider : Collider
      */
     Vec2 pc(const Particule& particule) override;
 
-    SphereCollider(Vec2 origine_, float rayon):p(origine_), r(rayon) {};
+    SphereCollider(Vec2 origine_, float rayon,QColor color_):p(origine_), r(rayon),color(color_) {};
 };
 /**
  * @brief The DynamicConstraint class store a constraint between two particules.
@@ -207,8 +209,8 @@ class Context
     void deleteContactConstraints();
     void applyLinkConstraints(float dt);
 
-    void addPlanCollider(Vec2 a, Vec2 b, bool c);
-    void addSphereCollider(Vec2 centre, float rayon);
+    void addPlanCollider(Vec2 a, Vec2 b, bool c,QColor color);
+    void addSphereCollider(Vec2 centre, float rayon,QColor color);
 public:
     Context();
     std::vector<std::shared_ptr<Particule>> particules;
@@ -216,7 +218,8 @@ public:
     std::vector<DynamicConstraint> dynamicConstraints;
     std::vector<std::shared_ptr<Collider>> CollidersPtr;
     std::vector<LinkConstraint> linkConstraints;
-
+    std::string mode = "particule";
+    Vec2 gravity = Vec2{0,-9.81};
     void create_solid(Vec2 pos, Vec2 v, float r, float m);
 
     void updatePhysicalSystem(float dt);

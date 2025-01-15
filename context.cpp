@@ -1,12 +1,99 @@
 #include "context.h"
 
 Context::Context() {
-    addPlanCollider(Vec2{100,100},Vec2{100,400}, false);
-    addPlanCollider(Vec2{100,400},Vec2{500,400}, true);
-    addPlanCollider(Vec2{500,400},Vec2{500,100}, false);
-    addPlanCollider(Vec2{500,100},Vec2{100,100}, true);
+    // Cadre intérieur
+    addPlanCollider(Vec2{50,50},Vec2{50,400}, true,Qt::black);
+    addPlanCollider(Vec2{50,400},Vec2{650,400}, true,Qt::black);
+    addPlanCollider(Vec2{650,400},Vec2{650,50}, true,Qt::black);
+    addPlanCollider(Vec2{650,50},Vec2{50,50}, true,Qt::black);
 
-    addSphereCollider(Vec2{100,200},50);
+    // Cadre extérieur
+    addPlanCollider(Vec2{20,20},Vec2{20,650}, true,Qt::black);
+    addPlanCollider(Vec2{20,650},Vec2{1500,650}, true,Qt::black);
+    addPlanCollider(Vec2{1500,650},Vec2{1500,20}, true,Qt::black);
+    addPlanCollider(Vec2{1500,20},Vec2{20,20}, true,Qt::black);
+
+    // Structure haut gauche
+    addSphereCollider(Vec2{100,320},25,Qt::blue);
+    addSphereCollider(Vec2{145,320},20,Qt::magenta);
+    addSphereCollider(Vec2{180,320},15,Qt::red);
+    addSphereCollider(Vec2{205,320},10,Qt::yellow);
+    addSphereCollider(Vec2{220,320},5,Qt::green);
+
+    // Structure milieu gauche
+    addPlanCollider(Vec2{50,250},Vec2{250,200}, false,Qt::blue);
+    addSphereCollider(Vec2{249,199},1,Qt::blue);
+    addPlanCollider(Vec2{250,200},Vec2{230,180}, false,Qt::blue);
+    addSphereCollider(Vec2{229,181},1,Qt::blue);
+    addPlanCollider(Vec2{230,180},Vec2{50,230}, false,Qt::blue);
+
+    // Structure milieu
+    addPlanCollider(Vec2{250,110},Vec2{350,300}, false,Qt::green);
+    addSphereCollider(Vec2{351,299},1,Qt::green);
+    addPlanCollider(Vec2{350,300},Vec2{380,280}, false,Qt::green);
+    addSphereCollider(Vec2{379,279},1,Qt::green);
+    addPlanCollider(Vec2{380,280},Vec2{280,120}, false,Qt::green);
+    addSphereCollider(Vec2{279,121},1,Qt::green);
+    addPlanCollider(Vec2{280,120},Vec2{250,100}, false,Qt::green);
+    addSphereCollider(Vec2{249,101},1,Qt::green);
+    addPlanCollider(Vec2{250,100},Vec2{200,90}, false,Qt::green);
+    addSphereCollider(Vec2{201,91},1,Qt::green);
+    addPlanCollider(Vec2{200,90},Vec2{200,100}, false,Qt::green);
+    addSphereCollider(Vec2{201,99},1,Qt::green);
+    addPlanCollider(Vec2{200,100},Vec2{250,110}, false,Qt::green);
+    addSphereCollider(Vec2{251,109},1,Qt::green);
+
+    // Ronds droite
+    addSphereCollider(Vec2{350,130},20,Qt::yellow);
+    addSphereCollider(Vec2{580,180},10,Qt::magenta);
+    addSphereCollider(Vec2{510,330},20,Qt::cyan);
+
+    // Structure bas droite
+    addPlanCollider(Vec2{600,80},Vec2{550,80}, false,Qt::magenta);
+    addSphereCollider(Vec2{551,81},1,Qt::magenta);
+    addPlanCollider(Vec2{550,80},Vec2{550,90}, false,Qt::magenta);
+    addSphereCollider(Vec2{551,89},1,Qt::magenta);
+    addPlanCollider(Vec2{550,90},Vec2{590,90}, false,Qt::magenta);
+    addSphereCollider(Vec2{591,89},1,Qt::magenta);
+    addPlanCollider(Vec2{590,90},Vec2{590,150}, false,Qt::magenta);
+    addSphereCollider(Vec2{591,149},1,Qt::magenta);
+    addPlanCollider(Vec2{590,150},Vec2{600,150}, false,Qt::magenta);
+    addSphereCollider(Vec2{599,149},1,Qt::magenta);
+    addPlanCollider(Vec2{600,150},Vec2{600,80}, false,Qt::magenta);
+    addSphereCollider(Vec2{599,81},1,Qt::magenta);
+
+    // 42 easter-egg
+    //4
+    addPlanCollider(Vec2{900,550},Vec2{900,340}, true,Qt::black);
+    addPlanCollider(Vec2{900,340},Vec2{990,340}, true,Qt::black);
+    addPlanCollider(Vec2{990,340},Vec2{990,200}, true,Qt::black);
+    addPlanCollider(Vec2{990,200},Vec2{1010,200}, true,Qt::black);
+    addPlanCollider(Vec2{1010,200},Vec2{1010,340}, true,Qt::black);
+    addPlanCollider(Vec2{1010,340},Vec2{1100,340}, true,Qt::black);
+    addPlanCollider(Vec2{1100,340},Vec2{1100,360}, true,Qt::black);
+    addPlanCollider(Vec2{1100,360},Vec2{1010,360}, true,Qt::black);
+    addPlanCollider(Vec2{1010,360},Vec2{1010,400}, true,Qt::black);
+    addPlanCollider(Vec2{1010,400},Vec2{990,400}, true,Qt::black);
+    addPlanCollider(Vec2{990,400},Vec2{990,360}, true,Qt::black);
+    addPlanCollider(Vec2{990,360},Vec2{920,360}, true,Qt::black);
+    addPlanCollider(Vec2{920,360},Vec2{920,550}, true,Qt::black);
+    addPlanCollider(Vec2{920,550},Vec2{900,550}, true,Qt::black);
+
+
+    //2
+    addPlanCollider(Vec2{1200,550},Vec2{1400,550}, false,Qt::black);
+    addPlanCollider(Vec2{1400,550},Vec2{1400,365}, false,Qt::black);
+    addPlanCollider(Vec2{1400,365},Vec2{1220,365}, false,Qt::black);
+    addPlanCollider(Vec2{1220,365},Vec2{1220,220}, false,Qt::black);
+    addPlanCollider(Vec2{1220,220},Vec2{1400,220}, false,Qt::black);
+    addPlanCollider(Vec2{1400,220},Vec2{1400,200}, false,Qt::black);
+    addPlanCollider(Vec2{1400,200},Vec2{1200,200}, false,Qt::black);
+    addPlanCollider(Vec2{1200,200},Vec2{1200,385}, false,Qt::black);
+    addPlanCollider(Vec2{1200,385},Vec2{1380,385}, false,Qt::black);
+    addPlanCollider(Vec2{1380,385},Vec2{1380,530}, false,Qt::black);
+    addPlanCollider(Vec2{1380,530},Vec2{1200,530}, false,Qt::black);
+    addPlanCollider(Vec2{1200,530},Vec2{1200,550}, false,Qt::black);
+
 }
 
 /**
@@ -15,8 +102,11 @@ Context::Context() {
  * @details It applies the external forces, updates the expected position of the particules, adds the static and dynamic contact constraints,
  */
 void Context::updatePhysicalSystem(float dt){
+
+
     applyExternalForce(dt);
     updateExpectedPosition(dt);
+
 
     addStaticContactConstraints(dt);
     addDynamicContactConstraints(dt);
@@ -32,23 +122,25 @@ void Context::updatePhysicalSystem(float dt){
  * @param a: first point of the plan
  * @param b: second point of the plan
  * @param c: true for a normal pointing in one direction, false for the other direction
+ * @param color: color of the plan
  */
-void Context::addPlanCollider(Vec2 a, Vec2 b, bool c) {
+void Context::addPlanCollider(Vec2 a, Vec2 b, bool c,QColor color) {
     Vec2 origine = (a+b)*(0.5);
     float largeur = sqrt((b-a)*(b-a));
-    Vec2 normale{b[1]-a[1],b[0]-a[0]};
+    Vec2 normale{-b[1]+a[1],b[0]-a[0]};
     normale = normale*(1/sqrt(normale*normale));
     if(c) normale = normale*(-1);
-    CollidersPtr.push_back(std::make_shared<PlanCollider>(normale,origine,largeur));
+    CollidersPtr.push_back(std::make_shared<PlanCollider>(normale,origine,largeur,color));
 }
 
 /**
  * @brief Context::addSphereCollider add a sphere collider to the simulation
  * @param centre: position of the sphere
  * @param rayon: radius of the sphere
+ * @param color: color of the sphere
  */
-void Context::addSphereCollider(Vec2 centre, float rayon) {
-    CollidersPtr.push_back(std::make_shared<SphereCollider>(centre, rayon));
+void Context::addSphereCollider(Vec2 centre, float rayon, QColor color) {
+    CollidersPtr.push_back(std::make_shared<SphereCollider>(centre, rayon,color));
 }
 
 /**
@@ -57,10 +149,9 @@ void Context::addSphereCollider(Vec2 centre, float rayon) {
  * @details It applies the gravity and the air resistance to the particules
  */
 void Context::applyExternalForce(float dt){
-    //gravity
-    float g = 9.81;
     for(auto &particule:particules){
-        particule->velocity[1] -= g;
+        particule->velocity[0] += gravity[0];
+        particule->velocity[1] += gravity[1];
     }
 /**/
     //air resistance
@@ -117,8 +208,8 @@ void PlanCollider::draw(QPainter* painter,float height) const {
                 << QPointF(coin3[0], height-coin3[1])
                 << QPointF(coin4[0], height-coin4[1]);
 
-    painter->setBrush(QBrush(Qt::black, Qt::Dense4Pattern));
-    painter->setPen(Qt::black);
+    painter->setBrush(QBrush(color, Qt::Dense4Pattern));
+    painter->setPen(color);
     painter->drawPolygon(planPolygon);
 }
 
@@ -138,7 +229,8 @@ void SphereCollider::draw(QPainter* painter,float height) const {
     float y = coord[1];
 
     QRectF target(x-r, y-r, r*2, r*2);
-    painter->setBrush(QBrush(Qt::black, Qt::Dense4Pattern));
+    painter->setBrush(QBrush(color, Qt::Dense4Pattern));
+    painter->setPen(color);
     painter->drawEllipse(target);
 }
 
