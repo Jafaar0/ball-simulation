@@ -1,8 +1,6 @@
 #include "drawarea.h"
 #include "QPainter"
 #include "QMouseEvent"
-#include <iostream>
-#include <ostream>
 #include <qtimer.h>
 
 DrawArea::DrawArea(QWidget *parent)
@@ -11,8 +9,6 @@ DrawArea::DrawArea(QWidget *parent)
     timer = new QTimer();
     QTimer::connect(timer, &QTimer::timeout, this, &DrawArea::animate);
     timer->start(dt);
-
-
 }
 
 
@@ -48,29 +44,31 @@ void DrawArea::affichage(QPainter *painter, QPaintEvent *event, Context &context
 };
 
 void DrawArea::paintEvent(QPaintEvent *e){
-    // dans la méthode pafloatEvent de votre nouveau Widget ajoutez :
     QPainter p(this);
     QRectF target( 0,0,this->width(),this->height());
     p.setBrush(QBrush(Qt::white));
     p.drawRect(target);
-
     affichage(&p,e,context,*this);
 }
 
 
-
-
-void DrawArea::mouseDoubleClickEvent(QMouseEvent *e){
-    x_ = e->x();
-    y_ = e->y();
-
-    //context.particules.push_back(Particule{this->worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m});
-
-    context.create_solid(worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m);
+void DrawArea::resetSimulation(){
+    context.linkConstraints.clear();
+    context.particules.clear();
+    context.gravity=Vec2{0,-9.81};
 }
 
+void DrawArea::changeMode(){
+    if (context.mode =="solid"){context.mode ="particule";}
+    else if(context.mode =="particule"){context.mode = "solid";}
+}
 
+void DrawArea::changeGravity(){context.gravity=Vec2{-context.gravity[1],context.gravity[0]};}
 
+void DrawArea::mouseDoubleClickEvent(QMouseEvent *e){
+    x_ = e->position().x();
+    y_ = e->position().y();
 
-
-
+    if (context.mode=="solid"){context.create_solid(worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m);}
+    else if (context.mode=="particule"){context.particules.push_back(std::make_shared<Particule>(Particule{this->worldToView(Vec2{x_,y_}),Vec2{vx,vy},r,m}));}
+}

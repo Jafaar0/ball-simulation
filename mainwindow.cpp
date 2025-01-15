@@ -9,7 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    auto button = ui->start_button;
+    auto resetbutton = ui->resetButton;
+    auto modebutton=ui->modeButton;
+    auto gravitybutton=ui->gravityButton;
     auto layout = ui->verticalLayout;
 
 
@@ -28,6 +30,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->input_r, &QLineEdit::textChanged, this, &MainWindow::updateRFromInput);
     connect(ui->input_m, &QLineEdit::textChanged, this, &MainWindow::updateMFromInput);
 
+    // Connexions pour les boutons
+    connect(resetbutton, &QPushButton::clicked, this, &MainWindow::reset);
+    connect(modebutton, &QPushButton::clicked, this, &MainWindow::mode);
+    connect(gravitybutton, &QPushButton::clicked, this, &MainWindow::gravity);
 
     draw_area->setM(20);
     draw_area->setR(10);
@@ -83,6 +89,11 @@ void MainWindow::updateMFromInput(const QString &text) {
     draw_area->setM(m);
 }
 
+void MainWindow::reset() {draw_area->resetSimulation();}
+
+void MainWindow::mode() {draw_area->changeMode();}
+
+void MainWindow::gravity() {draw_area->changeGravity();}
 
 
 MainWindow::~MainWindow()

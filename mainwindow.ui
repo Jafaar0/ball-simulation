@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>734</width>
     <height>600</height>
    </rect>
   </property>
@@ -125,14 +125,32 @@
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QPushButton" name="resetButton">
+          <property name="text">
+           <string>Reset Simulation</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="modeButton">
+          <property name="text">
+           <string>Change Particle Mode</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="gravityButton">
+          <property name="text">
+           <string>Alter Gravity</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
-    </item>
-    <item>
-     <widget class="QPushButton" name="start_button">
-      <property name="text">
-       <string>Start</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
@@ -141,7 +159,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>734</width>
      <height>25</height>
     </rect>
    </property>

@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QtOpenGLWidgets/qopenglwidget.h>
-#include <iostream>
 #include <qtimer.h>
 #include "context.h"
 
@@ -30,6 +29,9 @@ public:
     void setR(float r_) { r = r_; }
     void setM(float m_) { m = m_; }
 
+    void resetSimulation();
+    void changeMode();
+    void changeGravity();
 signals:
 private:
     float dt = 1e-3;

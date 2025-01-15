@@ -40,5 +40,9 @@ private:
 
     void updateMFromInput(const QString &text);
 
+    void reset();
+    void mode();
+    void gravity();
+
 };
 #endif // MAINWINDOW_H
